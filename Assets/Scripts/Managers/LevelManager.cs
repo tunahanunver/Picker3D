@@ -1,5 +1,6 @@
 using Commands.Level;
 using Data.ValueObjects;
+using Enums;
 using Signals;
 using UnityEngine;
 
@@ -99,7 +100,7 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         CoreGameSignals.Instance.onLevelInitialize?.Invoke((byte)(_currentLevel % totalLevelCount));
-        //UISignals
+        CoreUISignals.Instance.onOpenPanel?.Invoke(UIPanelTypes.Start, 1);
     }
 
 }

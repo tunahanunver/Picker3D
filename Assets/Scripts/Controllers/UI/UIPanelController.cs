@@ -38,13 +38,15 @@ namespace Controllers.UI
                 if (layer.childCount <= 0) return;
 #if UNITY_EDITOR
                 DestroyImmediate(layer.GetChild(0).gameObject);
-#endif
+#else
                 Destroy(layer.GetChild(0).gameObject);
+#endif
             }
         }
 
         private void OnOpenPanel(UIPanelTypes panelType, int value)
         {
+            OnClosePanel(value);
             Instantiate(Resources.Load<GameObject>($"Screens/{panelType}Panel"), layers[value]);
         }
 
@@ -52,9 +54,10 @@ namespace Controllers.UI
         {
             if (layers[value].childCount <= 0) return;
 #if UNITY_EDITOR
-            DestroyImmediate(layers[value].gameObject);
+            DestroyImmediate(layers[value].GetChild(0).gameObject);
+#else
+            Destroy(layers[value].GetChild(0).gameObject);
 #endif
-            Destroy(layers[value].gameObject);
         }
 
         private void UnSubscribeEvents()
