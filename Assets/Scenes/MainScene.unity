@@ -357,7 +357,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1374394417}
   - component: {fileID: 1374394419}
-  - component: {fileID: 1374394418}
+  - component: {fileID: 1374394420}
   m_Layer: 0
   m_Name: CameraManager
   m_TagString: Untagged
@@ -373,27 +373,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1374394416}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0235308, y: 0.97616637, z: -0.1643614, w: -0.13975313}
-  m_LocalPosition: {x: 1417.6116, y: 1752.8558, z: 2484.008}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1616785827}
   m_Father: {fileID: 828407466}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1374394418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1374394416}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8427d129b128aa4f911102e6f44e50e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  virtualCamera: {fileID: 1374394419}
 --- !u!114 &1374394419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,6 +420,19 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 1616785827}
+--- !u!114 &1374394420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1374394416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8427d129b128aa4f911102e6f44e50e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  virtualCamera: {fileID: 1374394419}
 --- !u!1 &1383700594
 GameObject:
   m_ObjectHideFlags: 0
@@ -849,8 +849,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1958702009}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0235308, y: 0.97616637, z: -0.1643614, w: -0.13975313}
-  m_LocalPosition: {x: 1417.6116, y: 1752.8558, z: 2484.008}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1010,7 +1010,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelHolder: {fileID: 2047439273}
-  totalLevelCount: 0
+  totalLevelCount: 1
 --- !u!1 &2116673992
 GameObject:
   m_ObjectHideFlags: 0
