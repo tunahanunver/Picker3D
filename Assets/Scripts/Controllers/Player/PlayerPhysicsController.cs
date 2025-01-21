@@ -1,3 +1,5 @@
+using Controllers.Pool;
+using DG.Tweening;
 using Signals;
 using UnityEngine;
 
@@ -33,7 +35,18 @@ namespace Controllers.Player
                 CoreGameSignals.Instance.onStageAreaEntered?.Invoke();
                 InputSignals.Instance.onEnableInput?.Invoke();
 
-                //Stage Area Kontrol
+                DOVirtual.DelayedCall(3, ()=>
+                {
+                    var result = other.transform.parent.GetComponentInChildren<PoolController>().TakeResults(manager.StageValue);
+
+                    if (result)
+                    {
+                        CoreGameSignals.Instance.onStageAreaSuccessful?.Invoke(manager.StageValue);
+                        InputSignals.Instance.onEnableInput?.Invoke();
+                    }
+                    else CoreGameSignals.Instance.onLevelFailed?.Invoke();
+                });
+                return;
             }
             if (other.CompareTag(_finish))
             {
@@ -47,6 +60,15 @@ namespace Controllers.Player
             {
                 //MiniGame Mekanikleri
             }
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.yellow;
+            var transform1 = manager.transform;
+            var position1 = transform1.position;
+
+            Gizmos.DrawSphere(new Vector3(position1.x, position1.y + 1f, position1.z + 1), 1.35f);    
         }
 
         public void OnReset()
