@@ -30,7 +30,7 @@ public class LevelManager : MonoBehaviour
     private void Awake()
     {
         _levelData = GetLevelData();
-        _currentLevel = GetActiveLevel(); 
+        _currentLevel = GetActiveLevel();
     }
 
     private void Init()
