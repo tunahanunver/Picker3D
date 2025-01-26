@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
-using Data.ValueObjects;
-using DG.Tweening;
-using Signals;
-using TMPro;
 using UnityEngine;
+using TMPro;
+using Signals;
+using Data.ValueObjects;
 
 namespace Controllers.Pool
 {
@@ -14,11 +12,12 @@ namespace Controllers.Pool
 
         #region Serialized Variables
 
-        [SerializeField] private List<DOTweenAnimation> tweens = new List<DOTweenAnimation>();
+        // Animasyonu çalıştırılacak tüm objeleri liste olarak alıyoruz
+        [SerializeField] private List<Animation> animatedObjects = new List<Animation>(); 
         [SerializeField] private TextMeshPro poolText;
         [SerializeField] private byte stageID;
         [SerializeField] private new Renderer renderer;
-            
+
         #endregion
 
         #region Private Variables
@@ -27,14 +26,14 @@ namespace Controllers.Pool
         private byte _collectedCount;
 
         private readonly string _collectable = "Collectable";
-            
+
         #endregion
-            
+
         #endregion
 
         private void Awake()
         {
-            _data = GetPoolData();    
+            _data = GetPoolData();
         }
 
         private PoolData GetPoolData()
@@ -44,33 +43,43 @@ namespace Controllers.Pool
 
         private void OnEnable()
         {
-            SubscribeEvents();    
+            SubscribeEvents();
         }
 
         private void SubscribeEvents()
         {
-            CoreGameSignals.Instance.onStageAreaSuccessful += OnActivateTweens;
+            CoreGameSignals.Instance.onStageAreaSuccessful += OnActivateAnimations;
             CoreGameSignals.Instance.onStageAreaSuccessful += OnChangePoolColor;
         }
 
-        private void OnActivateTweens(byte stageValue)
+        private void OnActivateAnimations(byte stageValue)
         {
             if (stageValue != stageID) return;
-            foreach (var tween in tweens)
+
+            // Listedeki tüm objelerin animasyonlarını aynı anda başlat
+            PlayAllAnimations();
+        }
+
+        private void PlayAllAnimations()
+        {
+            foreach (var animatedObject in animatedObjects)
             {
-                tween.DoPlay();
+                if (animatedObject != null) // Her ihtimale karşı null kontrolü
+                {
+                    animatedObject.Play(); // Animasyonu başlat
+                }
             }
         }
 
         private void OnChangePoolColor(byte stageValue)
         {
             if (stageValue != stageID) return;
-            renderer.material.DOColor(new Color(0.1607842f, 0.6039216f, 01766218f), 1).SetEase(Ease.Linear);
+            renderer.material.color = new Color(0.1607842f, 0.6039216f, 0.1766218f);
         }
 
         private void Start()
         {
-            SetRequiredAmountText();    
+            SetRequiredAmountText();
         }
 
         private void SetRequiredAmountText()
@@ -92,7 +101,7 @@ namespace Controllers.Pool
         {
             if (!other.CompareTag(_collectable)) return;
             IncreaseCollectedAmount();
-            SetCollectedAmountToPool();    
+            SetCollectedAmountToPool();
         }
 
         private void IncreaseCollectedAmount()
@@ -115,14 +124,6 @@ namespace Controllers.Pool
             if (!other.CompareTag(_collectable)) return;
             DecreaseCollectedAmount();
             SetCollectedAmountToPool();
-        }
-    }
-
-    internal class DOTweenAnimation
-    {
-        internal void DoPlay()
-        {
-            //Animasyon
         }
     }
 }
