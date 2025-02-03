@@ -18,6 +18,7 @@ public class UIManager : MonoBehaviour
         CoreGameSignals.Instance.onLevelSuccessful += OnLevelSuccessful;
         CoreGameSignals.Instance.onLevelFailed += OnLevelFailed;
         CoreGameSignals.Instance.onReset += OnReset;
+        CoreGameSignals.Instance.onStageAreaSuccessful += OnStageAreaSuccesful;
     }
 
     private void OnLevelFailed()
@@ -48,6 +49,7 @@ public class UIManager : MonoBehaviour
         CoreGameSignals.Instance.onLevelSuccessful -= OnLevelSuccessful;
         CoreGameSignals.Instance.onLevelFailed -= OnLevelFailed;
         CoreGameSignals.Instance.onReset -= OnReset;
+        CoreGameSignals.Instance.onStageAreaSuccessful -= OnStageAreaSuccesful;
     }
 
     private void OnDisable()
@@ -61,6 +63,11 @@ public class UIManager : MonoBehaviour
         CoreUISignals.Instance.onClosePanel?.Invoke(1);
         InputSignals.Instance.onEnableInput?.Invoke();
         CameraSignals.Instance.onSetCameraTarget?.Invoke();
+    }
+
+    private void OnStageAreaSuccesful(byte stageValue)
+    {
+        UISignals.Instance.onSetStageColor?.Invoke(stageValue);
     }
 
     public void NextLevel()

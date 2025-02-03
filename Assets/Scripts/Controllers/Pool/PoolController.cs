@@ -3,6 +3,8 @@ using UnityEngine;
 using TMPro;
 using Signals;
 using Data.ValueObjects;
+using DG.Tweening;
+using Unity.Mathematics;
 
 namespace Controllers.Pool
 {
@@ -12,11 +14,11 @@ namespace Controllers.Pool
 
         #region Serialized Variables
 
-        // Animasyonu çalıştırılacak tüm objeleri liste olarak alıyoruz
-        [SerializeField] private List<Animation> animatedObjects = new List<Animation>(); 
+        [SerializeField] private List<DOTweenAnimation> tweens = new List<DOTweenAnimation>();
         [SerializeField] private TextMeshPro poolText;
         [SerializeField] private byte stageID;
         [SerializeField] private new Renderer renderer;
+        [SerializeField] private float3 poolAfterColor = new float3(0.1607843f, 0.3144797f, 0.6039216f);
 
         #endregion
 
@@ -38,7 +40,8 @@ namespace Controllers.Pool
 
         private PoolData GetPoolData()
         {
-            return Resources.Load<CD_Level>("Data/CD_Level").Levels[(int)CoreGameSignals.Instance.onGetLevelValue?.Invoke()].Pools[stageID];
+            return Resources.Load<CD_Level>("Data/CD_Level")
+                .Levels[(int)CoreGameSignals.Instance.onGetLevelValue?.Invoke()].Pools[stageID];
         }
 
         private void OnEnable()
@@ -48,33 +51,25 @@ namespace Controllers.Pool
 
         private void SubscribeEvents()
         {
-            CoreGameSignals.Instance.onStageAreaSuccessful += OnActivateAnimations;
+            CoreGameSignals.Instance.onStageAreaSuccessful += OnActivateTweens;
             CoreGameSignals.Instance.onStageAreaSuccessful += OnChangePoolColor;
         }
 
-        private void OnActivateAnimations(byte stageValue)
+        private void OnActivateTweens(byte stageValue)
         {
             if (stageValue != stageID) return;
-
-            // Listedeki tüm objelerin animasyonlarını aynı anda başlat
-            PlayAllAnimations();
-        }
-
-        private void PlayAllAnimations()
-        {
-            foreach (var animatedObject in animatedObjects)
+            foreach (var tween in tweens)
             {
-                if (animatedObject != null) // Her ihtimale karşı null kontrolü
-                {
-                    animatedObject.Play(); // Animasyonu başlat
-                }
+                tween.DOPlay();
             }
         }
 
         private void OnChangePoolColor(byte stageValue)
         {
             if (stageValue != stageID) return;
-            renderer.material.color = new Color(0.1607842f, 0.6039216f, 0.1766218f);
+            renderer.material.DOColor(new Color(poolAfterColor.x, poolAfterColor.y, poolAfterColor.z, 1), .5f)
+                .SetEase(Ease.Flash)
+                .SetRelative(false);
         }
 
         private void Start()
@@ -124,6 +119,17 @@ namespace Controllers.Pool
             if (!other.CompareTag(_collectable)) return;
             DecreaseCollectedAmount();
             SetCollectedAmountToPool();
+        }
+
+        private void UnSubscribeEvents()
+        {
+            CoreGameSignals.Instance.onStageAreaSuccessful -= OnActivateTweens;
+            CoreGameSignals.Instance.onStageAreaSuccessful -= OnChangePoolColor;
+        }
+
+        private void OnDisable()
+        {
+            UnSubscribeEvents();
         }
     }
 }
