@@ -145,9 +145,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1e2bffcbd4295a4d8c69dbe8c13b9a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manager: {fileID: 0}
   renderer: {fileID: 1952694948194421573}
   scaleText: {fileID: 7971647109936070928}
-  confetti: {fileID: 4177039492546206025}
+  confettiParticle: {fileID: 0}
 --- !u!1 &205884047297280293
 GameObject:
   m_ObjectHideFlags: 0
@@ -546,7 +547,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: e1aea7e1c8a32c843a1be11258dd2436, type: 2}
+      objectReference: {fileID: 2100000, guid: 4816bea4c03656e438a856eecc951669, type: 2}
     - target: {fileID: 919132149155446097, guid: 38149fcbd25a149eb9bc831a3bec9539,
         type: 3}
       propertyPath: m_Name
@@ -969,12 +970,6 @@ PrefabInstance:
 --- !u!4 &732183183673939018 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4119492124458191458, guid: cc6ac80e26fcb4e88993773f2ff5a343,
-    type: 3}
-  m_PrefabInstance: {fileID: 3675602479803784744}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &4177039492546206025 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 789695307255465825, guid: cc6ac80e26fcb4e88993773f2ff5a343,
     type: 3}
   m_PrefabInstance: {fileID: 3675602479803784744}
   m_PrefabAsset: {fileID: 0}

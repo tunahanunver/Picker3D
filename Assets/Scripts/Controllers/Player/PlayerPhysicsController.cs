@@ -1,5 +1,6 @@
 using Controllers.Pool;
 using DG.Tweening;
+using Managers;
 using Signals;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace Controllers.Player
         [SerializeField] private PlayerManager manager;
         [SerializeField] private new Collider collider;
         [SerializeField] private new Rigidbody rigidbody;
-            
+
         #endregion
 
         #region Private Variables
@@ -22,9 +23,9 @@ namespace Controllers.Player
         private readonly string _stageArea = "StageArea";
         private readonly string _finish = "FinishArea";
         private readonly string _miniGame = "MiniGameArea";
-            
+
         #endregion
-            
+
         #endregion
 
         private void OnTriggerEnter(Collider other)
@@ -33,32 +34,36 @@ namespace Controllers.Player
             {
                 manager.ForceCommand.Execute();
                 CoreGameSignals.Instance.onStageAreaEntered?.Invoke();
-                InputSignals.Instance.onEnableInput?.Invoke();
+                InputSignals.Instance.onDisableInput?.Invoke();
 
-                DOVirtual.DelayedCall(3, ()=>
+                DOVirtual.DelayedCall(3, () =>
                 {
-                    var result = other.transform.parent.GetComponentInChildren<PoolController>().TakeResults(manager.StageValue);
+                    var result = other.transform.parent.GetComponentInChildren<PoolController>()
+                        .TakeResults(manager.StageValue);
 
                     if (result)
                     {
                         CoreGameSignals.Instance.onStageAreaSuccessful?.Invoke(manager.StageValue);
                         InputSignals.Instance.onEnableInput?.Invoke();
                     }
-                    else CoreGameSignals.Instance.onLevelFailed?.Invoke();
+                    else
+                    {
+                        CoreGameSignals.Instance.onLevelFailed?.Invoke();
+                    }
                 });
                 return;
             }
+
             if (other.CompareTag(_finish))
             {
                 CoreGameSignals.Instance.onFinishAreaEntered?.Invoke();
-                CoreGameSignals.Instance.onLevelSuccessful?.Invoke();
                 InputSignals.Instance.onDisableInput?.Invoke();
                 return;
             }
 
             if (other.CompareTag(_miniGame))
             {
-                //MiniGame Mekanikleri
+                //MiniGame
             }
         }
 
@@ -68,7 +73,7 @@ namespace Controllers.Player
             var transform1 = manager.transform;
             var position1 = transform1.position;
 
-            Gizmos.DrawSphere(new Vector3(position1.x, position1.y + 1f, position1.z + 1), 1.35f);    
+            Gizmos.DrawSphere(new Vector3(position1.x, position1.y - 1f, position1.z + .9f), 1.7f);
         }
 
         public void OnReset()

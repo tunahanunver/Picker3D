@@ -1,6 +1,6 @@
-using System;
 using Data.ValueObjects;
 using Keys;
+using Sirenix.OdinInspector;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -13,18 +13,19 @@ namespace Controllers.Player
         #region Serialized Variables
 
         [SerializeField] private new Rigidbody rigidbody;
-            
+
         #endregion
 
         #region Private Variables
 
-        private PlayerMovementData _data;
-        private bool _isReadyToMove, _isReadyToPlay;
-        private float _xValue;
+        [ShowInInspector] private PlayerMovementData _data;
+        [ShowInInspector] private bool _isReadyToMove, _isReadyToPlay;
+        [ShowInInspector] private float _xValue;
+
         private float2 _clampValues;
 
         #endregion
-            
+
         #endregion
 
         internal void SetData(PlayerMovementData data)
@@ -39,7 +40,8 @@ namespace Controllers.Player
                 StopPlayer();
                 return;
             }
-            if (!_isReadyToMove)
+
+            if (_isReadyToMove)
             {
                 MovePlayer();
             }
@@ -69,7 +71,7 @@ namespace Controllers.Player
             var position1 = rigidbody.position;
             Vector3 position;
             position = new Vector3(Mathf.Clamp(position1.x, _clampValues.x, _clampValues.y),
-            (position = rigidbody.position).y, position.z);
+                (position = rigidbody.position).y, position.z);
             rigidbody.position = position;
         }
 

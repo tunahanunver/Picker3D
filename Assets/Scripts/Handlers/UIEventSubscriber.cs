@@ -1,5 +1,6 @@
-using System;
 using Enums;
+using Managers;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,73 +12,81 @@ namespace Handlers
 
         #region Serialized Variables
 
-        [SerializeField] private UIEventSubscribtionTypes type;
+        [SerializeField] private UIEventSubscriptionTypes type;
         [SerializeField] private Button button;
-            
+
         #endregion
 
         #region Private Variables
 
-        private UIManager _manager;
-            
+        [ShowInInspector] private UIManager _manager;
+
         #endregion
-            
+
         #endregion
 
         private void Awake()
         {
-            GetReferences();    
+            FindReferences();
         }
 
-        private void GetReferences()
+        private void FindReferences()
         {
             _manager = FindObjectOfType<UIManager>();
         }
 
         private void OnEnable()
         {
-            SubscribeEvents();    
+            SubscribeEvents();
         }
 
         private void SubscribeEvents()
         {
             switch (type)
             {
-                case UIEventSubscribtionTypes.OnPlay:
+                case UIEventSubscriptionTypes.OnPlay:
+                {
                     button.onClick.AddListener(_manager.Play);
                     break;
-                case UIEventSubscribtionTypes.OnNextLevel:
+                }
+                case UIEventSubscriptionTypes.OnNextLevel:
+                {
                     button.onClick.AddListener(_manager.NextLevel);
                     break;
-                case UIEventSubscribtionTypes.OnRestartLevel:
+                }
+                case UIEventSubscriptionTypes.OnRestartLevel:
+                {
                     button.onClick.AddListener(_manager.RestartLevel);
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                }
             }
         }
 
-        private void UnSubscribeEvents()
+        private void UnsubscribeEvents()
         {
             switch (type)
             {
-                case UIEventSubscribtionTypes.OnPlay:
+                case UIEventSubscriptionTypes.OnPlay:
+                {
                     button.onClick.RemoveListener(_manager.Play);
                     break;
-                case UIEventSubscribtionTypes.OnNextLevel:
+                }
+                case UIEventSubscriptionTypes.OnNextLevel:
+                {
                     button.onClick.RemoveListener(_manager.NextLevel);
                     break;
-                case UIEventSubscribtionTypes.OnRestartLevel:
+                }
+                case UIEventSubscriptionTypes.OnRestartLevel:
+                {
                     button.onClick.RemoveListener(_manager.RestartLevel);
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                }
             }
         }
 
         private void OnDisable()
         {
-            UnSubscribeEvents();    
+            UnsubscribeEvents();
         }
     }
 }

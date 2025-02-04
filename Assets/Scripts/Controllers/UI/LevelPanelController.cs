@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using Signals;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,14 +16,14 @@ namespace Controllers.UI
 
         [SerializeField] private List<Image> stageImages = new List<Image>();
         [SerializeField] private List<TextMeshProUGUI> levelTexts = new List<TextMeshProUGUI>();
-            
+
         #endregion
-            
+
         #endregion
 
         private void OnEnable()
         {
-            SubscribeEvents();    
+            SubscribeEvents();
         }
 
         private void SubscribeEvents()
@@ -32,6 +32,7 @@ namespace Controllers.UI
             UISignals.Instance.onSetStageColor += OnSetStageColor;
         }
 
+        [Button("SetStageColor")]
         private void OnSetStageColor(byte stageValue)
         {
             stageImages[stageValue].DOColor(new Color(0.9960785f, 0.4196079f, 0.07843138f), 0.5f);
@@ -47,13 +48,13 @@ namespace Controllers.UI
 
         private void UnSubscribeEvents()
         {
-            UISignals.Instance.onSetLevelValue += OnSetLevelValue;
-            UISignals.Instance.onSetStageColor += OnSetStageColor;
+            UISignals.Instance.onSetLevelValue -= OnSetLevelValue;
+            UISignals.Instance.onSetStageColor -= OnSetStageColor;
         }
 
         private void OnDisable()
         {
-            UnSubscribeEvents();    
+            UnSubscribeEvents();
         }
     }
 }

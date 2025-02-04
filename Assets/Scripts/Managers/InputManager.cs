@@ -1,146 +1,144 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Data.UnityObjects;
 using Data.ValueObjects;
 using Keys;
 using Signals;
+using Sirenix.OdinInspector;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class InputManager : MonoBehaviour
+namespace Managers
 {
-    #region Self Variables
-
-    #region Private Variables
-
-    private InputData _data;
-    private bool _isAvailableForTouch, _isFirstTimeTouchTaken, _isTouching;
-
-    private float _currentVelocity;
-    private float3 _moveVector;
-    private Vector2? _mousePosition;
-        
-    #endregion
-        
-    #endregion
-
-    private void Awake()
+    public class InputManager : MonoBehaviour
     {
-        _data = GetInputData();   
-    }
+        #region Self Variables
 
-    private InputData GetInputData()
-    {
-        return Resources.Load<CD_Input>("Data/CD_Input").Data;
-    }
+        #region Private Variables
 
-    private void OnEnable()
-    {
-        SubscribeEvents();   
-    }
+        [ShowInInspector] private InputData _data;
+        [ShowInInspector] private bool _isAvailableForTouch, _isFirstTimeTouchTaken, _isTouching;
 
-    private void SubscribeEvents()
-    {
-        CoreGameSignals.Instance.onReset += OnReset;
-        InputSignals.Instance.onEnableInput += OnEnableInput;
-        InputSignals.Instance.onDisableInput += OnDisableInput;
-    }
+        private float _currentVelocity;
+        private float3 _moveVector;
+        private Vector2? _mousePosition;
 
-    private void OnDisableInput()
-    {
-        _isAvailableForTouch = false;
-    }
+        #endregion
 
-    private void OnEnableInput()
-    {
-        _isAvailableForTouch = true;
-    }
+        #endregion
 
-    private void OnReset()
-    {
-        _isAvailableForTouch = false;
-        _isFirstTimeTouchTaken = false;
-        _isTouching = false;
-    }
-
-    private void UnSubscribeEvents()
-    {
-        CoreGameSignals.Instance.onReset -= OnReset;
-        InputSignals.Instance.onEnableInput -= OnEnableInput;
-        InputSignals.Instance.onDisableInput -= OnDisableInput;
-    }
-
-    private void OnDisable()
-    {
-        UnSubscribeEvents();   
-    }
-
-    private void Update()
-    {
-        if (!_isAvailableForTouch) return;
-
-        if (Input.GetMouseButtonUp(0) && !IsPointerOverUIElement())
+        private void Awake()
         {
-            _isTouching = false;
-            InputSignals.Instance.onInputReleased?.Invoke();
-            Debug.LogWarning("Executed ---> OnInputReleased");
+            _data = GetInputData();
         }
 
-        if (Input.GetMouseButtonDown(0) && !IsPointerOverUIElement())
+        private InputData GetInputData()
         {
-            _isTouching = true;
-            InputSignals.Instance.onInputTaken?.Invoke();
-            Debug.LogWarning("Executed ---> OnInputTaken");
-            if (!_isFirstTimeTouchTaken)
+            return Resources.Load<CD_Input>("Data/CD_Input").Data;
+        }
+
+        private void OnEnable()
+        {
+            SubscribeEvents();
+        }
+
+        private void SubscribeEvents()
+        {
+            CoreGameSignals.Instance.onReset += OnReset;
+            InputSignals.Instance.onEnableInput += OnEnableInput;
+            InputSignals.Instance.onDisableInput += OnDisableInput;
+        }
+
+        private void OnDisableInput()
+        {
+            _isAvailableForTouch = false;
+        }
+
+        private void OnEnableInput()
+        {
+            _isAvailableForTouch = true;
+        }
+
+        private void OnReset()
+        {
+            _isAvailableForTouch = false;
+            //_isFirstTimeTouchTaken = false;
+            _isTouching = false;
+        }
+
+        private void UnSubscribeEvents()
+        {
+            CoreGameSignals.Instance.onReset -= OnReset;
+            InputSignals.Instance.onEnableInput -= OnEnableInput;
+            InputSignals.Instance.onDisableInput -= OnDisableInput;
+        }
+
+        private void OnDisable()
+        {
+            UnSubscribeEvents();
+        }
+
+        private void Update()
+        {
+            if (!_isAvailableForTouch) return;
+
+            if (Input.GetMouseButtonUp(0) && !IsPointerOverUIElement())
             {
-                _isFirstTimeTouchTaken = true;
-                InputSignals.Instance.onFirstTimeTouchTaken?.Invoke();
-                Debug.LogWarning("Executed ---> OnFirstTimeTouchTaken");
+                _isTouching = false;
+                InputSignals.Instance.onInputReleased?.Invoke();
             }
 
-            _mousePosition = Input.mousePosition;
-        }
-
-        if (Input.GetMouseButton(0) && !IsPointerOverUIElement())
-        {
-            if (_isTouching)
+            if (Input.GetMouseButtonDown(0) && !IsPointerOverUIElement())
             {
-                if (_mousePosition != null)
+                _isTouching = true;
+                InputSignals.Instance.onInputTaken?.Invoke();
+                if (!_isFirstTimeTouchTaken)
                 {
-                    Vector2 mouseDeltaPos = (Vector2)Input.mousePosition - _mousePosition.Value;
-                    if (mouseDeltaPos.x > _data.HorizontalInputSpeed)
-                    {
-                        _moveVector.x = _data.HorizontalInputSpeed / 10f * mouseDeltaPos.x;
-                    }
-                    else if (mouseDeltaPos.x < _data.HorizontalInputSpeed)
-                    {
-                        _moveVector.x = -_data.HorizontalInputSpeed / 10f * -mouseDeltaPos.x;
-                    }
-                    else
-                    {
-                        _moveVector.x = Mathf.SmoothDamp(-_moveVector.x, 0f, ref _currentVelocity, _data.ClampSpeed);
-                    }
+                    _isFirstTimeTouchTaken = true;
+                    InputSignals.Instance.onFirstTimeTouchTaken?.Invoke();
+                }
 
-                    _mousePosition = Input.mousePosition;
+                _mousePosition = Input.mousePosition;
+            }
 
-                    InputSignals.Instance.onInputDragged?.Invoke(new HorizontalInputParams()
+            if (Input.GetMouseButton(0) && !IsPointerOverUIElement())
+            {
+                if (_isTouching)
+                {
+                    if (_mousePosition != null)
                     {
-                        HorizontalValue = _moveVector.x, ClampValues = _data.ClampValues
-                    });
+                        Vector2 mouseDeltaPos = (Vector2)Input.mousePosition - _mousePosition.Value;
+                        if (mouseDeltaPos.x > _data.HorizontalInputSpeed)
+                            _moveVector.x = _data.HorizontalInputSpeed / 10f * mouseDeltaPos.x;
+                        else if (mouseDeltaPos.x < -_data.HorizontalInputSpeed)
+                            _moveVector.x = -_data.HorizontalInputSpeed / 10f * -mouseDeltaPos.x;
+                        else
+                            _moveVector.x = Mathf.SmoothDamp(_moveVector.x, 0f, ref _currentVelocity,
+                                _data.ClampSpeed);
 
+                        _moveVector.x = mouseDeltaPos.x;
+
+                        _mousePosition = Input.mousePosition;
+
+                        InputSignals.Instance.onInputDragged?.Invoke(new HorizontalInputParams()
+                        {
+                            HorizontalValue = _moveVector.x,
+                            ClampValues = _data.ClampValues
+                        });
+                    }
                 }
             }
         }
-    }
 
-    private bool IsPointerOverUIElement()
-    {
-        var eventData = new PointerEventData(EventSystem.current);
-        eventData.position = Input.mousePosition;
-        var results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventData, results);
-        return results.Count > 0;
+        private bool IsPointerOverUIElement()
+        {
+            var eventData = new PointerEventData(EventSystem.current)
+            {
+                position = Input.mousePosition
+            };
+            var results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+            return results.Count > 0;
+        }
     }
 }

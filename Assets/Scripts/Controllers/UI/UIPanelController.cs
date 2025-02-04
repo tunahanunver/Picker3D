@@ -1,8 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Enums;
 using Signals;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Controllers.UI
@@ -14,9 +13,9 @@ namespace Controllers.UI
         #region Serialized Variables
 
         [SerializeField] private List<Transform> layers = new List<Transform>();
-            
+
         #endregion
-            
+
         #endregion
 
         private void OnEnable()
@@ -31,6 +30,7 @@ namespace Controllers.UI
             CoreUISignals.Instance.onCloseAllPanels += OnCloseAllPanels;
         }
 
+        [Button("Close All Panels")]
         private void OnCloseAllPanels()
         {
             foreach (var layer in layers)
@@ -44,19 +44,22 @@ namespace Controllers.UI
             }
         }
 
+        [Button("Open Panel")]
         private void OnOpenPanel(UIPanelTypes panelType, int value)
         {
             OnClosePanel(value);
             Instantiate(Resources.Load<GameObject>($"Screens/{panelType}Panel"), layers[value]);
         }
 
+        [Button("Close Panel")]
         private void OnClosePanel(int value)
         {
             if (layers[value].childCount <= 0) return;
+
 #if UNITY_EDITOR
             DestroyImmediate(layers[value].GetChild(0).gameObject);
 #else
-            Destroy(layers[value].GetChild(0).gameObject);
+                Destroy(layers[value].GetChild(0).gameObject);
 #endif
         }
 
@@ -69,7 +72,7 @@ namespace Controllers.UI
 
         private void OnDisable()
         {
-            UnSubscribeEvents();    
+            UnSubscribeEvents();
         }
     }
 }

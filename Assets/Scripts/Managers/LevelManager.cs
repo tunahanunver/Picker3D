@@ -5,9 +5,11 @@ using Signals;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
+namespace Managers
 {
-    #region Self Variables
+    public class LevelManager : MonoBehaviour
+    {
+        #region Self Variables
 
         #region Serialized Variables
 
@@ -107,5 +109,5 @@ public class LevelManager : MonoBehaviour
             CoreGameSignals.Instance.onLevelInitialize?.Invoke((byte)(_currentLevel % totalLevelCount));
             CoreUISignals.Instance.onOpenPanel?.Invoke(UIPanelTypes.Start, 1);
         }
-
+    }
 }

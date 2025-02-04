@@ -1,70 +1,70 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Cinemachine;
 using Signals;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class CameraManager : MonoBehaviour
+namespace Managers
 {
-    #region Self Variables
-
-    #region Serialized Variables
-
-    [SerializeField] private CinemachineVirtualCamera virtualCamera;
-        
-    #endregion
-
-    #region Private Variables
-
-    private float3 _firstPosition;
-        
-    #endregion
-        
-    #endregion
-
-    private void Start()
+    public class CameraManager : MonoBehaviour
     {
-        Init();    
-    }
+        #region Self Variables
 
-    private void Init()
-    {
-        _firstPosition = transform.position;
-    }
+        #region Serialized Variables
 
-    private void OnEnable()
-    {
-        SubscribeEvents();    
-    }
+        [SerializeField] private CinemachineVirtualCamera virtualCamera;
 
-    private void SubscribeEvents()
-    {
-        CameraSignals.Instance.onSetCameraTarget += OnSetCameraTarget;
-        CoreGameSignals.Instance.onReset += OnReset;
-    }
+        #endregion
 
-    private void OnSetCameraTarget()
-    {
-        var player = FindObjectOfType<PlayerManager>().transform;
-        virtualCamera.Follow = player;
-        //virtualCamera.LookAt = player;
-    }
+        #region Private Variables
 
-    private void OnReset()
-    {
-        transform.position = _firstPosition;
-    }
+        private float3 _firstPosition;
 
-    private void UnSubscribeEvents()
-    {
-        CameraSignals.Instance.onSetCameraTarget -= OnSetCameraTarget;
-        CoreGameSignals.Instance.onReset -= OnReset;
-    }
+        #endregion
 
-    private void OnDisable()
-    {
-        UnSubscribeEvents();    
+        #endregion
+
+        private void Start()
+        {
+            Init();
+        }
+
+        private void Init()
+        {
+            _firstPosition = transform.position;
+        }
+
+        private void OnEnable()
+        {
+            SubscribeEvents();
+        }
+
+        private void SubscribeEvents()
+        {
+            CameraSignals.Instance.onSetCameraTarget += OnSetCameraTarget;
+            CoreGameSignals.Instance.onReset += OnReset;
+        }
+
+        private void OnSetCameraTarget()
+        {
+            var player = FindObjectOfType<PlayerManager>().transform;
+            virtualCamera.Follow = player;
+            //virtualCamera.LookAt = player;
+        }
+
+        private void OnReset()
+        {
+            transform.position = _firstPosition;
+        }
+
+        private void UnSubscribeEvents()
+        {
+            CameraSignals.Instance.onSetCameraTarget -= OnSetCameraTarget;
+            CoreGameSignals.Instance.onReset -= OnReset;
+        }
+
+        private void OnDisable()
+        {
+            UnSubscribeEvents();
+        }
     }
 }
