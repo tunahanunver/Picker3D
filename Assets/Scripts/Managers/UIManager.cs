@@ -53,13 +53,15 @@ namespace Managers
         public void NextLevel()
         {
             CoreGameSignals.Instance.onNextLevel?.Invoke();
-            CoreGameSignals.Instance.onReset?.Invoke();
+            //CoreGameSignals.Instance.onReset?.Invoke();
+            CoreUISignals.Instance.onClosePanel?.Invoke(2);
         }
 
         public void RestartLevel()
         {
             CoreGameSignals.Instance.onRestartLevel?.Invoke();
-            CoreGameSignals.Instance.onReset?.Invoke();
+            //CoreGameSignals.Instance.onReset?.Invoke();
+            CoreUISignals.Instance.onClosePanel?.Invoke(2);
         }
 
         public void Play()
